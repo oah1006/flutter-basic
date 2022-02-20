@@ -6,68 +6,83 @@ class MyApp extends StatefulWidget {
 //  StatefulWidget has internal "state"
   String? name;
   int? age;
+
   MyApp({
     this.name,
     this.age
   });
 
-  @override
   State<StatefulWidget> createState() {
     return _MyAppState();
   }
 }
 
-class _MyAppState extends State<MyApp> {
-  String _email = ''; // this is state!
-  final emailEditingController = TextEditingController();
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
+ String _email = "";
+ final emailEditingController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+    print('Run initState()');
+  }
 
   @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance?.removeObserver(this);
+    print('Run dispose()');
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if(state == AppLifecycleState.paused) {
+      print('App is in Background mode');
+    } else if (state == AppLifecycleState.resumed) {
+      print('App is in Foreground mode');
+    }
+  }
+
   Widget build(BuildContext context) {
+    print('Run build()');
     return MaterialApp(
-      title: "This is a StatefulWidget",
+      title: "This is the state",
       home: Scaffold(
         body: Center(
-          // child: Text(
-          //   "name: ${widget.name} - age: ${widget.age}",
-          //   style: TextStyle(
-          //     fontSize: 40,
-          //     color: Colors.pink,
-          //   )
-          // )
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: TextField(
-                  // how to get value from TextField?
                   controller: emailEditingController,
                   onChanged: (text) {
                     this.setState(() {
-                      _email = text; // when state changed => build() rerun -> reload widget
+                      _email = text;
                     });
                   },
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(30)
-                        ),
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(10)
                       ),
-                      labelText: "Enter your email: "
+                    ),
+                    labelText: "Enter your email"
                   ),
-                )
+                ),
               ),
               Text(
-                'See result here',
-                style: TextStyle(
-                  fontSize: 40,
-                  color: Colors.blue
-                )
+                  "see result here",
+                  style: TextStyle(
+                      fontSize: 40,
+                      color: Colors.blue
+                  )
               ),
               Text(
                   _email,
                   style: TextStyle(
-                      fontSize: 30,
+                      fontSize: 40,
                       color: Colors.green
                   )
               )
@@ -78,3 +93,5 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
+

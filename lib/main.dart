@@ -9,7 +9,7 @@ void main() {
 
   runApp(
     //Center is a widget, Text is a widget
-    MyApp(name: 'Hao', age: 20)
+    MyApp()
   );
 }
 
