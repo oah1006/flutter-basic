@@ -1,51 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'dart:io';
+
 
 // You can define your own Widget
 class MyApp extends StatefulWidget {
-//  StatefulWidget has internal "state"
-  String? name;
-  int? age;
-
-  MyApp({
-    this.name,
-    this.age
-  });
-
+  @override
   State<StatefulWidget> createState() {
     return _MyAppState();
   }
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
- String _email = "";
- final emailEditingController = TextEditingController();
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addObserver(this);
-    print('Run initState()');
+
   }
 
   @override
   void dispose() {
     super.dispose();
     WidgetsBinding.instance?.removeObserver(this);
-    print('Run dispose()');
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if(state == AppLifecycleState.paused) {
-      print('App is in Background mode');
-    } else if (state == AppLifecycleState.resumed) {
-      print('App is in Foreground mode');
-    }
-  }
-
   Widget build(BuildContext context) {
-    print('Run build()');
+    // now how to display a DateTime?
+    DateTime now = new DateTime.now();
+    DateTime someDate = new DateTime(2020, 5, 2);
     return MaterialApp(
       title: "This is the state",
       home: Scaffold(
@@ -53,39 +37,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: TextField(
-                  controller: emailEditingController,
-                  onChanged: (text) {
-                    this.setState(() {
-                      _email = text;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(10)
-                      ),
-                    ),
-                    labelText: "Enter your email"
-                  ),
-                ),
-              ),
               Text(
-                  "see result here",
+                  // DateFormat('yyyy/MM/dd').format(now),
+                  // DateFormat.yMMMd().format(now),
+                  // U can also format a number
+                  NumberFormat('###.0#', 'en_US').format(12.345678),
+                  // let's use extra library
                   style: TextStyle(
-                      fontSize: 40,
+                      fontSize: 20,
                       color: Colors.blue
                   )
               ),
-              Text(
-                  _email,
-                  style: TextStyle(
-                      fontSize: 40,
-                      color: Colors.green
-                  )
-              )
             ]
           )
         )
