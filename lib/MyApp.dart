@@ -1,3 +1,7 @@
+import 'dart:ffi';
+import 'dart:core';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
@@ -12,6 +16,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _contentController = TextEditingController();
+  final _amountController = TextEditingController();
+  // define states
+  String? _content;
+  var _amount;
   @override
   void initState() {
     super.initState();
@@ -27,28 +37,55 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
 
   @override
   Widget build(BuildContext context) {
-    // now how to display a DateTime?
-    DateTime now = new DateTime.now();
-    DateTime someDate = new DateTime(2020, 5, 2);
     return MaterialApp(
       title: "This is the state",
       home: Scaffold(
-        body: Center(
+        key: _scaffoldKey,
+        body: SafeArea(
+          minimum: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                  // DateFormat('yyyy/MM/dd').format(now),
-                  // DateFormat.yMMMd().format(now),
-                  // U can also format a number
-                  NumberFormat('###.0#', 'en_US').format(12.345678),
-                  // let's use extra library
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.blue
-                  )
-              ),
-            ]
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Content',
+                  ),
+                  controller: _contentController,
+                  onChanged: (text) {
+                    setState(() {
+                      _content = text;
+                    });
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Amount(money)',
+                  ),
+                  controller: _amountController,
+                  onChanged: (text) {
+                    setState(() {
+                      _amount = double.tryParse(text) ?? 0;
+                    });
+                  },
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      textStyle: const TextStyle(fontSize: 20),
+                      primary: Colors.white,
+                      backgroundColor: Colors.green,
+                  ),
+                  onPressed: () {
+                    // print('Content = $_content, money\'s amount = $_amount');
+                    _scaffoldKey.currentState!.showSnackBar(
+                        SnackBar(
+                          content: Text('Content = $_content, money\'s amount = $_amount'),
+                          duration: Duration(seconds: 3),
+                        )
+                    );
+                  },
+                  child: const Text('Insert Transaction'),
+                ),
+              ]
           )
         )
       )
